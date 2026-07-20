@@ -34,9 +34,8 @@ def extract_data(response):
     return extract_playlist
 
 
-
 if __name__ == "__main__":
     response = establish_connection()
-    extract_data(response)
+    extract_data = extract_data(response)
 
 
