@@ -3,6 +3,7 @@ import json
 
 import requests
 from dotenv import load_dotenv
+from data_extraction.extract_playlist import MAX_RESULTS
 
 load_dotenv()
 
@@ -46,7 +47,7 @@ def extract_video_data(video_ids):
             yield video_id_list[video_id:video_id + batch_size]
 
         try:
-            for batch in batch_list(video_ids, max_results):
+            for batch in batch_list(video_ids, MAX_RESULTS):
                 video_ids_str = ",".join(batch)
                 url = f'https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails&part=snippet&part=statistics&id={video_ids_str}&key={API_KEY}'
 
@@ -63,7 +64,7 @@ def extract_video_data(video_ids):
                     video_data = {
                         "video_id": video_id,
                         "title": snippet['title'],
-                        "published_at": snippet['published_at'],
+                        "published_at": snippet['publishedAt'],
                         "duration": content_details['duration'],
                         "viewCount": statistics.get("viewCount", None),
                         "likeCount": statistics.get("likeCount", None),
@@ -72,7 +73,7 @@ def extract_video_data(video_ids):
 
                     extracted_data.append(video_data)
 
-             return extracted_data
+            return extracted_data
 
         except requests.exceptions.RequestException as e:
             raise e
