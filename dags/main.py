@@ -2,6 +2,7 @@ from airflow import DAG
 import pendulum
 from datetime import datetime, timedelta
 from api.extract_video_data import get_playlist_id, get_video_ids, extract_video_data, save_to_json
+from dataquality.soda import check_data_quality
 
 from datawarehouse.dwh import staging_table, core_table
 
@@ -20,6 +21,9 @@ default_args = {
     "start_date": datetime(2026, 7,21, tzinfo=local_tz),
     # "end_date": datetime(2030, 7,21, tzinfo=local_tz)
 }
+
+staging_schema = "staging"
+core_schema = "core"
 
 with DAG(
     dag_id='produce_json',
@@ -50,3 +54,17 @@ with DAG(
     update_core = core_table()
 
     update_staging >> update_core
+
+
+with DAG(
+    dag_id='data_check',
+    default_args=default_args,
+    description="DAG to execute data quality checks",
+    schedule="0 16 * * *",
+    catchup=False
+) as dag:
+
+    data_quality_test_staging = check_data_quality(staging_schema)
+    data_quality_test_core = check_data_quality(core_schema)
+
+    data_quality_test_staging >> data_quality_test_core

@@ -74,18 +74,17 @@ def update_rows(cur, conn, schema, row):
 def delete_rows(cur, conn, schema, ids):
 
     try:
-        ids = f"""({', '.join(f"{id}" for id in ids)})"""
-
         cur.execute(
             f"""
             DELETE FROM {schema}.{table}
-            WHERE "Video_ID" IN {ids}
-            """
+            WHERE "Video_ID" = ANY(%s)
+            """,
+            (list(ids),)
         )
 
         conn.commit()
 
-        logger.info(f"Deleted row with Video_ID: {ids}")
+        logger.info(f"Deleted rows with Video_ID in: {list(ids)}")
 
     except Exception as e:
         logger.error(f"Error deleting row with Video_ID: {ids} - {e}")

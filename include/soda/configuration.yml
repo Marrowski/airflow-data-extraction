@@ -1,0 +1,8 @@
+data_source pg_datasource:
+  type: postgres
+  username: ${AIRFLOW_DATABASE_USERNAME}
+  password: ${AIRFLOW_DATABASE_PASSWORD}
+  host: ${POSTGRES_CONN_HOST}
+  port: ${POSTGRES_CONN_PORT}
+  database: ${AIRFLOW_DATABASE_NAME}
+  schema: ${SCHEMA}

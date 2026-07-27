@@ -86,7 +86,7 @@ def core_table():
         ids_to_delete = set(table_ids) - current_video_ids
 
         if ids_to_delete:
-            delete_rows(conn, cur, schema, ids_to_delete)
+            delete_rows(cur, conn, schema, ids_to_delete)
 
         logger.info(f"{schema} table update completed")
 
