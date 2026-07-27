@@ -21,6 +21,7 @@ jobs:
       - name: Get changed files
         id: changed-files-build
         uses: tj-actions/changed-files@v45
+        continue-on-error: true
         with:
           files: |
             Dockerfile
@@ -74,6 +75,7 @@ jobs:
       - name: Get changed files
         id: changed-files-tests
         uses: tj-actions/changed-files@v45
+        continue-on-error: true
         with:
           files: |
             dags/**
