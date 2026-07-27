@@ -115,7 +115,6 @@ services:
       - "5433:5432"
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
-      - ${AIRFLOW_PROJ_DIR:-.}/scripts/postgres-init.sql:/docker-entrypoint-initdb.d/postgres-init.sql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s

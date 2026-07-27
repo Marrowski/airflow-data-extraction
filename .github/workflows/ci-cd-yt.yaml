@@ -61,6 +61,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Initialize postgres databases
+        run: |
+          docker compose up -d postgres --wait
+          docker compose exec -T postgres psql -U airflow \
+            -c "CREATE USER ${METADATA_DATABASE_USERNAME} WITH PASSWORD '${METADATA_DATABASE_PASSWORD}';" \
+            -c "CREATE DATABASE ${METADATA_DATABASE_NAME} OWNER ${METADATA_DATABASE_USERNAME};" \
+            -c "CREATE USER ${CELERY_BACKEND_USERNAME} WITH PASSWORD '${CELERY_BACKEND_PASSWORD}';" \
+            -c "CREATE DATABASE ${CELERY_BACKEND_NAME} OWNER ${CELERY_BACKEND_USERNAME};"
       - name: Set up Docker Compose
         run: docker compose up -d --wait --wait-timeout 300
       - name: Show logs on failure
