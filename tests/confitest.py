@@ -1,7 +1,8 @@
 import os
+import sys
 import pytest
 from unittest import mock
-from airflow.models import Variable, Connection
+from airflow.models import Variable, Connection,DagBag
 
 @pytest.fixture
 def api_key():
@@ -29,3 +30,12 @@ def mock_postgres_conn_vars():
 
     with mock.patch.dict("os.environ", AIRFLOW_CONN_POSTGRES_CONN_USERNAME=conn_uri):
         yield Connection.get_connection_from_secrets(conn_id="POSTGRES_CONN_USERNAME")
+
+
+
+@pytest.fixture
+def dagbag():
+    dags_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'dags'))
+    if dags_path not in sys.path:
+        sys.path.insert(0, dags_path)
+    yield DagBag()
