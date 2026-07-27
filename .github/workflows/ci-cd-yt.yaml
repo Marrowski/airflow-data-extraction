@@ -62,7 +62,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Set up Docker Compose
-        run: docker compose up -d
+        run: docker compose up -d --wait --wait-timeout 300
       - name: Show logs on failure
         if: failure()
         run: docker compose logs --tail=50
