@@ -30,15 +30,16 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Log in to DockerHub
         if: steps.changed-files-build.outputs.any_changed == 'true'
+        uses: docker/login-action@v3
         with:
-          username ${{ vars.DOCKERHUB_USERNAME }}
-          password ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build and push Docker image
         if: steps.changed-files-build.outputs.any_changed == 'true'
         run: |
               docker buildx build --push \
-                --tag ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_PASSWORD }}: latest \
-                --tag ${{ vars.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_PASSWORD }}:${{ github.sha }} \
+                --tag ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY }}:latest \
+                --tag ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY }}:${{ github.sha }} \
                 .
 
   unit-and-integration-and-e2e-tests:
@@ -83,7 +84,7 @@ jobs:
         run: docker compose up -d
       - name: Run Unit and Integration Tests
         if: steps.changed-files-tests.outputs.any_changed == 'true'
-        run: docker exec it airflow-airflow-worker-1 sh -c "pytest tests/ -v"
+        run: docker exec -it airflow-airflow-worker-1 sh -c "pytest tests/ -v"
       - name: Run End-to-End DAG Tests
         if: steps.changed-files-tests.outputs.any_changed == 'true'
         run: |
