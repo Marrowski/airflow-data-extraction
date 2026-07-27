@@ -27,6 +27,7 @@ default_args = {
 staging_schema = "staging"
 core_schema = "core"
 
+#1
 with DAG(
     dag_id='produce_json',
     default_args=default_args,
@@ -48,7 +49,7 @@ with DAG(
 
     playlist_id >> video_ids >> extract_data >> save >> trigger_update_db
 
-
+#2
 with DAG(
     dag_id='update_db',
     default_args=default_args,
@@ -67,6 +68,7 @@ with DAG(
 
     update_staging >> update_core >> trigger_data_quality
 
+#3
 with DAG(
     dag_id='data_check',
     default_args=default_args,
