@@ -5,6 +5,12 @@ on:
     branches:
       - master
       - 'feature/*'
+    paths:
+      - 'Dockerfile'
+      - 'requirements.txt'
+      - 'dags/**'
+      - 'include/**'
+      - 'docker-compose.yaml'
 
   pull_request:
     branches:
