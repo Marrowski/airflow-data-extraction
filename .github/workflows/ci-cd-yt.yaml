@@ -75,12 +75,12 @@ jobs:
         if: failure()
         run: docker compose logs --tail=50
       - name: Run Unit and Integration Tests
-        run: docker exec -it airflow-airflow-worker-1 sh -c "pytest tests/ -v"
+        run: docker compose exec -T airflow-worker sh -c "pytest tests/ -v"
       - name: Run End-to-End DAG Tests
         run: |
           DAG_NAMES=("produce_json" "update_db" "data_check")
           for DAG in "${DAG_NAMES[@]}"; do
-            docker exec -t airflow-airflow-worker-1 sh -c "airflow dags test $DAG"
+            docker compose exec -T airflow-worker sh -c "airflow dags test $DAG"
           done
       - name: Tear down Docker Compose
         run: docker compose down
